@@ -1,0 +1,20 @@
+#!/bin/bash
+while true #Bucle infinito que se ejecuta hasta que el usuario ingrese "q" para salir
+do  
+    #No se imprime un mensaje solicitando input para minimizar el numero de mensajes que se muetra al usuario
+    read input argumento #lee el input del usuario y lo guarda en una variable
+    if [ "$input" == "q" ] #evalua si el input es q, en cuyo caso se sale del programa
+    then
+        echo "Saliendo de la aplicacion de analisis de la Wikipedia.."
+        exit 0  #Se sale del programa con un codigo de salida 0, indicando que no hubo errores
+
+    elif [ "$input" == "ca" ] #evalua si el input es ca, en cuyo caso se busca el argumento en el archivo ca-net.csv
+    then
+        echo "$(grep -i "$argumento" ca-net.csv | wc -l) entradas" #Se imprime el numero de entradas que coinciden con el argumento
+        grep -i "$argumento" ca-net.csv | head | column -t -s "," #Se imprime las primeras 5 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
+    elif [ "$input" == "at" ] #Evalua si el input es at, en cuyo caso se busca el argumento en el archivo ca-net.csv, pero solo en los primero caracteres de la columna 2
+    then
+        echo "$(cut -d "," -f 2- ca-net.csv | grep -i "^$argumento" | wc -l) entradas" #Se imprime el numero de entradas que coinciden con el argumento
+        cut -d "," -f 2- ca-net.csv | sort | grep -i "^$argumento" | head -n 5 | column -t -s "," #Se imprime las primeras 5 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
+    fi
+done #Cierre del bucle infinito
