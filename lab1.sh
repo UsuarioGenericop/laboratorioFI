@@ -1,4 +1,5 @@
 #!/bin/bash
+CALIDAD_MIN=0.0
 while true #Bucle infinito que se ejecuta hasta que el usuario ingrese "q" para salir
 do  
     #No se imprime un mensaje solicitando input para minimizar el numero de mensajes que se muetra al usuario
@@ -25,5 +26,15 @@ do
         else
             sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s ","
         fi 
+    elif [ "$input" == "sq" ]
+    then
+        if [[ "$argumento" == "" ]] || (( "$argumento" > 100))  ||  (("$argumento" < 0)) 
+        then
+            CALIDAD_MIN="$CALIDAD_MIN"
+            echo "$CALIDAD_MIN"
+        else
+            CALIDAD_MIN="$argumento"
+            echo "$CALIDAD_MIN"
+        fi
     fi
 done #Cierre del bucle infinito
