@@ -11,10 +11,19 @@ do
     elif [ "$input" == "ca" ] #evalua si el input es ca, en cuyo caso se busca el argumento en el archivo ca-net.csv
     then
         echo "$(grep -i "$argumento" ca-net.csv | wc -l) entradas" #Se imprime el numero de entradas que coinciden con el argumento
-        grep -i "$argumento" ca-net.csv | head | column -t -s "," #Se imprime las primeras 5 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
+        grep -i "$argumento" ca-net.csv | head | column -t -s "," #Se imprime las primeras 10 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
     elif [ "$input" == "at" ] #Evalua si el input es at, en cuyo caso se busca el argumento en el archivo ca-net.csv, pero solo en los primero caracteres de la columna 2
     then
         echo "$(cut -d "," -f 2- ca-net.csv | grep -i "^$argumento" | wc -l) entradas" #Se imprime el numero de entradas que coinciden con el argumento
         cut -d "," -f 2- ca-net.csv | sort | grep -i "^$argumento" | head -n 5 | column -t -s "," #Se imprime las primeras 5 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
+    
+    elif [ "$input" == "top" ]
+    then 
+        if [ "$argumento" == "" ] 
+        then 
+            sort -nr -t, -k3 ca-net.csv| head | column -t -s ","
+        else
+            sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s ","
+        fi 
     fi
 done #Cierre del bucle infinito
