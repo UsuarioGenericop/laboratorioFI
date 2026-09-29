@@ -32,8 +32,12 @@ do
         then
             CALIDAD_MIN="$CALIDAD_MIN"
             echo "$CALIDAD_MIN"
-        else
+        elif [[ $argumento =~ ^[0-9]+$ ]]
+        then
             CALIDAD_MIN="$argumento"
+            echo "$CALIDAD_MIN"
+        else
+            CALIDAD_MIN="$CALIDAD_MIN"
             echo "$CALIDAD_MIN"
         fi
     fi
