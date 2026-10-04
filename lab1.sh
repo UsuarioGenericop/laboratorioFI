@@ -40,5 +40,8 @@ do
             CALIDAD_MIN="$CALIDAD_MIN"
             echo "$CALIDAD_MIN"
         fi
+    elif [ "$input" == "lnq" ]
+    then
+        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && $3 >= calidad {print $0}' ca-net.csv | head -n "$argumento" | column -t -s ","
     fi
 done #Cierre del bucle infinito
