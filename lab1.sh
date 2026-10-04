@@ -28,11 +28,11 @@ do
         fi 
     elif [ "$input" == "sq" ]
     then
-        if [[ "$argumento" == "" ]] || (( "$argumento" > 100))  ||  (("$argumento" < 0)) 
+        if [[ "$argumento" == "" ]] || (( $(echo "$argumento > 100" | bc -l) )) || (( $(echo "$argumento < 0" | bc -l) ))
         then
             CALIDAD_MIN="$CALIDAD_MIN"
             echo "$CALIDAD_MIN"
-        elif [[ $argumento =~ ^[0-9]+$ ]]
+        elif [[ $argumento =~ ^[0-9]+(\.[0-9]+)?$ ]]
         then
             CALIDAD_MIN="$argumento"
             echo "$CALIDAD_MIN"
@@ -42,6 +42,6 @@ do
         fi
     elif [ "$input" == "lnq" ]
     then
-        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && $3 >= calidad {print $0}' ca-net.csv | head -n "$argumento" | column -t -s ","
+        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | sort -n -t, -k3 | head -n "$argumento" | column -t -s ","
     fi
 done #Cierre del bucle infinito
