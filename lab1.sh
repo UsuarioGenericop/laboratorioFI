@@ -18,12 +18,12 @@ do
         echo "$(cut -d "," -f 2- ca-net.csv | grep -i "^$argumento" | wc -l) entradas" #Se imprime el numero de entradas que coinciden con el argumento
         cut -d "," -f 2- ca-net.csv | sort | grep -i "^$argumento" | head -n 5 | column -t -s "," #Se imprime las primeras 5 entradas que coinciden con el argumento, formateadas en columnas y separadas por comas
     
-    elif [ "$input" == "top" ]
+    elif [ "$input" == "top" ] #Evalua si el input es top, en cuyo caso se filtra de mayor a menor por la columna 3
     then 
-        if [ "$argumento" == "" ] 
+        if [ "$argumento" == "" ] #Revisa si $argumento esta vacio, en cuyo caso se imprime el top 10 por defecto
         then 
             sort -nr -t, -k3 ca-net.csv| head | column -t -s ","
-        else
+        else #Si $argumento no esta vacio, se imprime el top $argumento
             sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s ","
         fi 
     elif [ "$input" == "sq" ]
