@@ -22,9 +22,9 @@ do
     then 
         if [ "$argumento" == "" ] #Revisa si $argumento esta vacio, en cuyo caso se imprime el top 10 por defecto
         then 
-            sort -nr -t, -k3 ca-net.csv| head | column -t -s ","
+            sort -nr -t, -k3 ca-net.csv| head | column -t -s "," #Se filtra con sort -n para ordenar por numeros -nr para ordenar numeros en orden inverso (de mayor a menor), -t, para indicar que el separador de las columnas es la coma, -k3 para indicar que se ordene por las entradas en la columna 3
         else #Si $argumento no esta vacio, se imprime el top $argumento
-            sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s ","
+            sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s "," #head -n "$argumento" para indicar que se imprima el top $argumento
         fi 
     elif [ "$input" == "sq" ]
     then
