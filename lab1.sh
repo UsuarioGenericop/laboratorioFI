@@ -48,5 +48,11 @@ do
         awk -F ',' -v calidad="$CALIDAD_MIN" 'NR == 1 || ($3+0) >= (calidad+0)' ca-net.csv | sort -n -t, -k3 | column -t -s "," >> sup_"$CALIDAD_MIN".csv
         echo "sup_$CALIDAD_MIN.csv"
         echo "$(awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | wc -l) entradas"
+    elif [ "$input" == "est" ]
+    then
+        awk -F ',' 'NR == 2 {min = max = $3 + 0} NR > 1 { total += 1; sum += $3; if (($3 + 0) >= 80.0) altaCalidad += 1; else if (($3 + 0) <= 20.0) bajaCalidad += 1; if ($3 + 0 < min) min = $3 + 0; if ($3 + 0 > max) max = $3 + 0 } {promedio = sum/total} END { print "=== ESTADÍSTICAS GENERALES DEL DATASET ==="; 
+        print "Total de articulos procesados: " total; 
+        print "Calidad minima: "min " || " "Calidad maxima: "max " || " "Calidad promedio: "promedio;
+        print "Articulos de alta calidad (>= 80.0): "altaCalidad " || " altaCalidad/total*100 "%"; print "Articulos de baja calidad (<= 20.0): "bajaCalidad " || " bajaCalidad/total*100 "%"}' ca-net.csv
     fi
 done #Cierre del bucle infinito
