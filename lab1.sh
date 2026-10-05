@@ -43,5 +43,10 @@ do
     elif [ "$input" == "lnq" ]
     then
         awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | sort -n -t, -k3 | head -n "$argumento" | column -t -s ","
+    elif [ "$input" == "ea" ]
+    then 
+        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR == 1 || ($3+0) >= (calidad+0)' ca-net.csv | sort -n -t, -k3 | column -t -s "," >> sup_"$CALIDAD_MIN".csv
+        echo "sup_$CALIDAD_MIN.csv"
+        echo "$(awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | wc -l) entradas"
     fi
 done #Cierre del bucle infinito
