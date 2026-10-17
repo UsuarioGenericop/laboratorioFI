@@ -75,12 +75,24 @@ do
         echo "$(awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | wc -l) entradas"
         #imprime el numero de lineas encontradas que cumplen con la condicion de tener una calidad mayor a CALIDAD_MIN
         #NR > 1 omite la primera linea en el conteo
-    elif [ "$input" == "est" ]
+    elif [ "$input" == "est" ] #evalua si el input es est, en cuyo caso se analiza el dataset y se imprimen estadisticas generales
     then
         awk -F ',' 'NR == 2 {min = max = $3 + 0} NR > 1 { total += 1; sum += $3; if (($3 + 0) >= 80.0) altaCalidad += 1; else if (($3 + 0) <= 20.0) bajaCalidad += 1; if ($3 + 0 < min) min = $3 + 0; if ($3 + 0 > max) max = $3 + 0 } {promedio = sum/total} END { print "=== ESTADÍSTICAS GENERALES DEL DATASET ==="; 
         print "Total de articulos procesados: " total; 
         print "Calidad minima: "min " || " "Calidad maxima: "max " || " "Calidad promedio: "promedio;
-        print "Articulos de alta calidad (>= 80.0): "altaCalidad " || " altaCalidad/total*100 "%"; print "Articulos de baja calidad (<= 20.0): "bajaCalidad " || " bajaCalidad/total*100 "%"}' ca-net.csv
+        print "Articulos de alta calidad (>= 80.0): "altaCalidad " || " altaCalidad/total*100 "%"; print "Articulos de baja calidad (<= 20.0): "bajaCalidad " || " bajaCalidad/total*100 "%"}' ca-net.csv 
+        #awk invoca awk
+        #-F ',' indica que el separador de columnas es la coma
+        #NR == 2 {min = max = $3 + 0} inicializa min y max con el valor de la columna 3 de la segunda linea del archivo porque la primera es la cabecera, si no se inicializan min y max con algun valor se imprimira 0 para ambas al final del analisis
+        #NR > 1 ejectua el bloque de codigo en todas las lineas del archivo excepto la primera
+            #{ total += 1; sum += $3} incrementa el contador de articulos y la suma de las calidades en todas las lineas del archivo excepto la primera
+            #if (($3 +0) >= 80.0) altaCalidad += 1 si la calidad en la tercera columna es mayor o igual a 80.0 incrementa en uno el contador de articulos de alta calidad
+            #else if (($3 +0) <= 20.0) bajaCalidad += 1 si la calidad en la tercera columna en cambio es menor o igual a 20.0 incrementa en uno el contador de articulos de baja calidad
+            #if ($3 + 0 < min) min = $3 + 0 si la tercera columna de la linea actual es menor que el valor minimo actual, se actualiza el valor minimo
+            #if ($3 + 0 > max) max = $3 + 0 si la tercera columna de la linea actual es mayor que el valor maximo actual, se actualiza el valor maximo
+        #{promedio = sum/total} calcula el promedio de calidad dividiendo la suma de calidades entre el total de articulos
+        #END { print ...} imprime las estadisticas generales del dataset
+        # ; permite separar varias instrucciones para que se ejecuten en el mismo bloque de codigo
     elif [ "$input" == "web" ]
     then
         cut -d "," -f2 ca-net.csv | grep -qx -i -F "$argumento" && {
