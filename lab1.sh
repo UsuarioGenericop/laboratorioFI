@@ -93,7 +93,7 @@ do
         #{promedio = sum/total} calcula el promedio de calidad dividiendo la suma de calidades entre el total de articulos
         #END { print ...} imprime las estadisticas generales del dataset
         # ; permite separar varias instrucciones para que se ejecuten en el mismo bloque de codigo
-    elif [ "$input" == "web" ]
+    elif [ "$input" == "web" ] #evalua si el input es web, en cuyo caso se busca el argumento, se reemplazan los espacios por guiones, se realiza una peticion a la API de Wikipedia y se guarda la respuesta en un archivo con el nombre del argumento
     then
         cut -d "," -f2 ca-net.csv | grep -qx -i -F "$argumento" && {
         titulo=$(echo "$argumento" | tr ' ' '_')
