@@ -52,9 +52,16 @@ do
             CALIDAD_MIN="$CALIDAD_MIN" #en cualquier otro caso, se mantiene el valor de CALIDAD_MIN y se imprime
             echo "$CALIDAD_MIN"
         fi
-    elif [ "$input" == "lnq" ]
+    elif [ "$input" == "lnq" ] #evalua si el input es lnq, en cuyo caso se filtra por calidad con base a la variable CALIDAD_MIN
     then
-        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | sort -n -t, -k3 | head -n "$argumento" | column -t -s ","
+        awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | sort -n -t, -k3 | head -n "$argumento" | column -t -s "," #se filtra con awk para que solo se impriman las entradas que cumplan con la condicion de calidad, luego se ordena de menor a mayor por la calidad y se imprime el top $argumento de entradas
+        #awk invoca awk
+        #-F ',' indica que el separador de columnas es la coma
+        #-v calidad="$CALIDAD_MIN" pasa la variable CALIDAD_MIN a awk
+        #'NR > 1 ' indica que se omita la primera linea del archivo (la cabecera)
+        # && operador AND
+        # ($3+0) >= (calidad+0) indica que se filtre por la columna 3 (calidad) y se compare con la variable calidad
+        #se suma 0 para forzar una comparacion numerica esto evita una comparacion de texto donde 20.0 seria mayor que 100.0
     elif [ "$input" == "ea" ]
     then 
         awk -F ',' -v calidad="$CALIDAD_MIN" 'NR == 1 || ($3+0) >= (calidad+0)' ca-net.csv | sort -n -t, -k3 | column -t -s "," >> sup_"$CALIDAD_MIN".csv
