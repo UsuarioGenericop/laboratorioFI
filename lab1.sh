@@ -54,5 +54,15 @@ do
         print "Total de articulos procesados: " total; 
         print "Calidad minima: "min " || " "Calidad maxima: "max " || " "Calidad promedio: "promedio;
         print "Articulos de alta calidad (>= 80.0): "altaCalidad " || " altaCalidad/total*100 "%"; print "Articulos de baja calidad (<= 20.0): "bajaCalidad " || " bajaCalidad/total*100 "%"}' ca-net.csv
+    elif [ "$input" == "web" ]
+    then
+        cut -d "," -f2 ca-net.csv | grep -qx -i -F "$argumento" && {
+        titulo=$(echo "$argumento" | tr ' ' '_')
+        codigo=$(curl -s -o "${titulo}.meta" -w "%{http_code}" "https://ca.wikipedia.org/api/rest_v1/page/summary/${titulo}")
+        if [ "$codigo" = "404" ]; then
+            echo "El artículo $argumento no existe."
+        fi
+        } || echo "No encontrado en el CSV."
+        
     fi
 done #Cierre del bucle infinito
