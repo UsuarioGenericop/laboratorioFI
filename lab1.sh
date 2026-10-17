@@ -1,5 +1,5 @@
 #!/bin/bash
-CALIDAD_MIN=0.0
+CALIDAD_MIN=0.0 #Declara la variable que servira para filtrar los articulos por calidad
 while true #Bucle infinito que se ejecuta hasta que el usuario ingrese "q" para salir
 do  
     #No se imprime un mensaje solicitando input para minimizar el numero de mensajes que se muetra al usuario
@@ -26,18 +26,30 @@ do
         else #Si $argumento no esta vacio, se imprime el top $argumento
             sort -nr -t, -k3 ca-net.csv  | head -n "$argumento" | column -t -s "," #head -n "$argumento" para indicar que se imprima el top $argumento
         fi 
-    elif [ "$input" == "sq" ]
+    elif [ "$input" == "sq" ] #evalua si el input es sq, en cuyo caso se modifica la variable CALIDAD_MIN
     then
-        if [[ "$argumento" == "" ]] || (( $(echo "$argumento > 100" | bc -l) )) || (( $(echo "$argumento < 0" | bc -l) ))
+        if [[ "$argumento" == "" ]] || (( $(echo "$argumento > 100" | bc -l) )) || (( $(echo "$argumento < 0" | bc -l) )) #si el argumento esta vacio es mayor a 100 o menor a 0
+        # $ para evaluar el resultado del comando
+        # bc -l evalua expresiones matematicas y devuelve 1 si es verdadero o 0 si es falso
+        # si bc devuelve 1, entonces el argumento es invalido y se mantiene el valor de CALIDAD_MIN
         then
-            CALIDAD_MIN="$CALIDAD_MIN"
-            echo "$CALIDAD_MIN"
-        elif [[ $argumento =~ ^[0-9]+(\.[0-9]+)?$ ]]
+            CALIDAD_MIN="$CALIDAD_MIN" #se mantiene el valor de CALIDAD_MIN
+            echo "$CALIDAD_MIN" #se imprime el valor de CALIDAD_MIN
+        elif [[ $argumento =~ ^[0-9]+(\.[0-9]+)?$ ]] #evalua si el argumento es un numero, ya sea decimal o entero
+        # [] permite definir un rango de caracteres y usar el =~
+        # =~ permite evaluar si el argumento cumple con la expresion de la derecha retornando 0 si es verdadero y 1 si es falso
+        # ^ indica que el argumento debe empezar con un numero
+        # [0-9]+ indica que debe haber al menos un numero
+        # + indica que debe aparecer el menos una vez
+        # (\.[0-9]+)? indica que puede haber un punto seguido de al menos un numero, pero no es obligatorio
+        # \. indica un punto el \ indica que debe ser un punto literal
+        # ? indica que el grupo (\.[0-9]+) puede aparecer 0 o 1 veces
+        # $ indica que el argumento debe terminar con un numero
         then
-            CALIDAD_MIN="$argumento"
+            CALIDAD_MIN="$argumento" #si el formato del argumento es correcto establece la variable CALIDAD_MIN con el valor del argumento
             echo "$CALIDAD_MIN"
         else
-            CALIDAD_MIN="$CALIDAD_MIN"
+            CALIDAD_MIN="$CALIDAD_MIN" #en cualquier otro caso, se mantiene el valor de CALIDAD_MIN y se imprime
             echo "$CALIDAD_MIN"
         fi
     elif [ "$input" == "lnq" ]
