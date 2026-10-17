@@ -62,11 +62,19 @@ do
         # && operador AND
         # ($3+0) >= (calidad+0) indica que se filtre por la columna 3 (calidad) y se compare con la variable calidad
         #se suma 0 para forzar una comparacion numerica esto evita una comparacion de texto donde 20.0 seria mayor que 100.0
-    elif [ "$input" == "ea" ]
+    elif [ "$input" == "ea" ] #evalua si el input es ea, en cuyo caso se filtra por calidad con base a la variable CALIDAD_MIN y se guarda en un archivo
     then 
         awk -F ',' -v calidad="$CALIDAD_MIN" 'NR == 1 || ($3+0) >= (calidad+0)' ca-net.csv | sort -n -t, -k3 | column -t -s "," >> sup_"$CALIDAD_MIN".csv
-        echo "sup_$CALIDAD_MIN.csv"
+        # 'NR == 1 || ($3+0) >= (calidad+0)' indica que se incluya la primera linea del archivo (la cabecera)
+        # || operador OR
+        #sort -n ordena numericamente -t, indica que el separador es una coma -k3 ordena de menor a mayor por la columna 3 (calidad)
+        #column -t -s "," formatea la salida en formato de tabla
+        #>> pasa la salida al archivo sin borrar sus contendios
+        #sup_"$CALIDAD_MIN".csv es el nombre del archivo de salida
+        echo "sup_$CALIDAD_MIN.csv" #imprime el nombre del archivo
         echo "$(awk -F ',' -v calidad="$CALIDAD_MIN" 'NR > 1 && ($3+0) >= (calidad+0) {print $0}' ca-net.csv | wc -l) entradas"
+        #imprime el numero de lineas encontradas que cumplen con la condicion de tener una calidad mayor a CALIDAD_MIN
+        #NR > 1 omite la primera linea en el conteo
     elif [ "$input" == "est" ]
     then
         awk -F ',' 'NR == 2 {min = max = $3 + 0} NR > 1 { total += 1; sum += $3; if (($3 + 0) >= 80.0) altaCalidad += 1; else if (($3 + 0) <= 20.0) bajaCalidad += 1; if ($3 + 0 < min) min = $3 + 0; if ($3 + 0 > max) max = $3 + 0 } {promedio = sum/total} END { print "=== ESTADÍSTICAS GENERALES DEL DATASET ==="; 
