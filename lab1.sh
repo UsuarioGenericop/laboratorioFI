@@ -95,13 +95,24 @@ do
         # ; permite separar varias instrucciones para que se ejecuten en el mismo bloque de codigo
     elif [ "$input" == "web" ] #evalua si el input es web, en cuyo caso se busca el argumento, se reemplazan los espacios por guiones, se realiza una peticion a la API de Wikipedia y se guarda la respuesta en un archivo con el nombre del argumento
     then
-        cut -d "," -f2 ca-net.csv | grep -qx -i -F "$argumento" && {
+        cut -d "," -f2 ca-net.csv | grep -qx -i -F "$argumento" && { 
+        #grep -q para que no imprima la salida, solo devuelva un codigo de salida 0 si encuentra el argumento y 1 si no lo encuentra
+        #grep -x para que busque el argumento completo, no solo una parte
+        #grep -i para que no distinga entre mayusculas y minusculas
+        #grep -F para que busque el argumento como una cadena literal
+        # && indica que si el comando anterior devuelve 0 (verdadero) se ejecuta el bloque de codigo entre llaves
         titulo=$(echo "$argumento" | tr ' ' '_')
+        #titulo=$(echo "$argumento" | tr ' ' '_') reemplaza los espacios por guiones bajos para que el titulo sea compatible con la URL
         codigo=$(curl -s -o "${titulo}.meta" -w "%{http_code}" "https://ca.wikipedia.org/api/rest_v1/page/summary/${titulo}")
-        if [ "$codigo" = "404" ]; then
+        #codigo=$(curl -s -o "${titulo}.meta" -w "%{http_code}" "https://ca.wikipedia.org/api/rest_v1/page/summary/${titulo}") realiza una peticion a la API de Wikipedia y guarda la respuesta en un archivo con el nombre del argumento y la extension .meta, ademas de guardar el codigo de estado HTTP en la variable codigo
+        #curl -s para que no imprima la salida, solo devuelva un codigo
+        #curl -o "${titulo}.meta" para que guarde la salida en un archivo con el nombre del argumento y la extension .meta
+        #curl -w "%{http_code}" para que devuelva el codigo de estado HTTP
+        if [ "$codigo" = "404" ]; then #si el codigo de estado HTTP es 404, significa que la pagina no existe
             echo "El artículo $argumento no existe."
         fi
         } || echo "No encontrado en el CSV."
+        # || indica que si el comando anterior (el que esta en los corchetes) devuelve 1 (falso) se ejecuta el comando despues de ||, en este caso imprime "No encontrado en el CSV."
         
     fi
 done #Cierre del bucle infinito
