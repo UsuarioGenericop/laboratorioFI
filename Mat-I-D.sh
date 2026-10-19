@@ -1,4 +1,6 @@
 #!/bin/bash
+#Andres Quintero y Omar Rizki
+#Grupo Mat I-D
 CALIDAD_MIN=0.0 #Declara la variable que servira para filtrar los articulos por calidad
 while true #Bucle infinito que se ejecuta hasta que el usuario ingrese "q" para salir
 do  
